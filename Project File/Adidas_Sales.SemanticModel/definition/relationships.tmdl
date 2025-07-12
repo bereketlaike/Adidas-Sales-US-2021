@@ -1,0 +1,5 @@
+relationship 52426063-de80-4a19-ac7d-18a49f2f285a
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Sales_details.'Invoice Date'
+	toColumn: LocalDateTable_7b7d0472-b0b3-4287-bbec-edd9382157f2.Date
+

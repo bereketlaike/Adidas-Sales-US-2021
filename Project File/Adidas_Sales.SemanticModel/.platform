@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Adidas_Sales"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "faabcadc-7820-4162-ae9e-83b5a1263024"
+  }
+}

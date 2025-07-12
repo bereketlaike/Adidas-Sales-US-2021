@@ -1,0 +1,345 @@
+table Sales_details
+	lineageTag: 058badb6-3835-43d1-aa58-0773de376111
+
+	measure 'YoY Profit Change (%)' =
+			
+			VAR CurrentYearProfit = CALCULATE(SUM(Sales_details[Operating Profit]), YEAR('Sales_details'[Invoice Date]) = 2021)
+			VAR PreviousYearProfit = CALCULATE(SUM(Sales_details[Operating Profit]), YEAR('Sales_details'[Invoice Date]) = 2020)
+			RETURN
+			DIVIDE(CurrentYearProfit - PreviousYearProfit, PreviousYearProfit) * 100
+		lineageTag: aca6f891-05b1-4ad1-b43e-817c5a5527ea
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure CurrentYearProfit = CALCULATE(SUM(Sales_details[Operating Profit]), YEAR('Sales_details'[Invoice Date]) = 2021)
+		lineageTag: 3e6f86b4-0bca-4e68-bb1e-a1727950c966
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure PreviousYearProfit = CALCULATE(SUM(Sales_details[Operating Profit]), YEAR('Sales_details'[Invoice Date]) = 2020)
+		lineageTag: 729a6aa3-eee4-4f0e-bc91-3f70ad637fd1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Sales 2021' =
+			CALCULATE(SUM(Sales_details[Total Sales]),
+			    YEAR('Sales_details'[Invoice Date]) = 2021)
+		formatString: 0
+		lineageTag: 6ba36ae0-87bc-421f-9ff4-a8b9070c6419
+
+	measure 'Sales 2020' =
+			
+			CALCULATE(
+			    SUM(Sales_details[Total Sales]),
+			    YEAR('Sales_details'[Invoice Date]) = 2020
+			)
+		formatString: 0
+		lineageTag: 8d816280-96c5-4fc9-bc51-b0e0dc1507af
+
+	measure 'Sales Growth %' = ```
+			
+			DIVIDE(
+			    Sales_details[Sales 2021] - Sales_details[Sales 2020],
+			    Sales_details[Sales 2020]
+			) * 100
+			
+			```
+		lineageTag: b180a9ee-dd30-45cf-9639-8f6f8f463dae
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Sales per City' =
+			
+			DIVIDE(
+			    SUM([Total Sales]),
+			    DISTINCTCOUNT(Sales_details[City])
+			)
+		lineageTag: c693c73b-6261-41b6-8eac-760a050fcac8
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Retailer
+		dataType: string
+		lineageTag: 2a42cb3f-30ea-4d7c-99af-03b43c8aee6f
+		summarizeBy: none
+		sourceColumn: Retailer
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Retailer ID'
+		dataType: int64
+		formatString: 0
+		lineageTag: 10ff64c7-c241-4e50-ad32-b8bc638e0882
+		summarizeBy: count
+		sourceColumn: Retailer ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Invoice Date'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 7db4a1c8-2aec-486a-bb25-efac61aa2c99
+		summarizeBy: none
+		sourceColumn: Invoice Date
+
+		variation Variation
+			isDefault
+			relationship: 52426063-de80-4a19-ac7d-18a49f2f285a
+			defaultHierarchy: LocalDateTable_7b7d0472-b0b3-4287-bbec-edd9382157f2.'Hiérarchie de dates'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Region
+		dataType: string
+		lineageTag: 14ad8ea2-e3bf-425d-a8c0-6563c3aeab37
+		dataCategory: County
+		summarizeBy: none
+		sourceColumn: Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column State
+		dataType: string
+		lineageTag: c87a9a54-bb8c-43a3-93d0-6202fc904ee7
+		dataCategory: StateOrProvince
+		summarizeBy: none
+		sourceColumn: State
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: dcc92ccd-ebc4-4854-a6ed-ee4e7ba60a23
+		dataCategory: City
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Gender Type'
+		dataType: string
+		lineageTag: 4cf1046c-4906-4879-b82c-63e61ff5330e
+		summarizeBy: none
+		sourceColumn: Gender Type
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Product Category'
+		dataType: string
+		lineageTag: e7362032-bb00-482f-9b19-f8fcba87fc2f
+		summarizeBy: none
+		sourceColumn: Product Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Price per Unit'
+		dataType: int64
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 0b81a201-fd20-4824-b268-b6f9d658f20d
+		summarizeBy: sum
+		sourceColumn: Price per Unit
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column 'Units Sold'
+		dataType: int64
+		formatString: 0
+		lineageTag: 8519e934-980e-4a6d-8cd4-998849407f28
+		summarizeBy: sum
+		sourceColumn: Units Sold
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Total Sales'
+		dataType: int64
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 6e3904fe-ff7e-414d-8c0d-782f4b307eb1
+		summarizeBy: sum
+		sourceColumn: Total Sales
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Operating Profit'
+		dataType: double
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: e26a4cdc-e875-48d6-b159-949026ed7728
+		summarizeBy: sum
+		sourceColumn: Operating Profit
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Operating Margin'
+		dataType: double
+		lineageTag: 4db135d6-c526-4597-b4a9-7c25592b2bfd
+		summarizeBy: sum
+		sourceColumn: Operating Margin
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Sales Method'
+		dataType: string
+		lineageTag: c11128f7-2264-49c5-bf4b-81502ab9a36e
+		summarizeBy: none
+		sourceColumn: Sales Method
+
+		annotation SummarizationSetBy = Automatic
+
+	column CityState = Sales_details[City] & ", " & Sales_details[State]
+		lineageTag: b73a9657-7afb-4d09-a458-c4cfdd6fc469
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Longitude =
+			SWITCH(
+			    TRUE(),
+			    [City] = "New Orleans" && [State] = "Louisiana", -90.0715,
+			    [City] = "Honolulu" && [State] = "Hawaii", -157.8583,
+			    [City] = "Richmond" && [State] = "Virginia", -77.4360,
+			    [City] = "Portland" && [State] = "Oregon", -122.6765,
+			    [City] = "Portland" && [State] = "Maine", -70.2553,
+			    [City] = "Denver" && [State] = "Colorado", -104.9903,
+			    [City] = "Dallas" && [State] = "Texas", -96.7970,
+			    [City] = "Las Vegas" && [State] = "Nevada", -115.1398,
+			    [City] = "Albuquerque" && [State] = "New Mexico", -106.6504,
+			    [City] = "Boise" && [State] = "Idaho", -116.2023,
+			    [City] = "Atlanta" && [State] = "Georgia", -84.3880,
+			    [City] = "New York" && [State] = "New York", -74.0060,
+			    [City] = "San Francisco" && [State] = "California", -122.4194,
+			    [City] = "Miami" && [State] = "Florida", -80.1918,
+			    [City] = "Charleston" && [State] = "South Carolina", -79.9311,
+			    [City] = "Charleston" && [State] = "West Virginia", -81.6326,
+			    [City] = "Orlando" && [State] = "Florida", -81.3792,
+			    [City] = "Seattle" && [State] = "Washington", -122.3321,
+			    [City] = "Los Angeles" && [State] = "California", -118.2437,
+			    [City] = "Houston" && [State] = "Texas", -95.3698,
+			    [City] = "Albany" && [State] = "New York", -73.7562,
+			    [City] = "Charlotte" && [State] = "North Carolina", -80.8431,
+			    [City] = "Detroit" && [State] = "Michigan", -83.0458,
+			    [City] = "Cheyenne" && [State] = "Wyoming", -104.8202,
+			    [City] = "Columbus" && [State] = "Ohio", -82.9988,
+			    [City] = "Knoxville" && [State] = "Tennessee", -83.9207,
+			    [City] = "Birmingham" && [State] = "Alabama", -86.8025,
+			    [City] = "Manchester" && [State] = "New Hampshire", -71.4548,
+			    [City] = "Phoenix" && [State] = "Arizona", -112.0740,
+			    [City] = "Billings" && [State] = "Montana", -108.5007,
+			    [City] = "Jackson" && [State] = "Mississippi", -90.1848,
+			    [City] = "Anchorage" && [State] = "Alaska", -149.9003,
+			    [City] = "Burlington" && [State] = "Vermont", -73.2121,
+			    [City] = "Little Rock" && [State] = "Arkansas", -92.2896,
+			    [City] = "Wilmington" && [State] = "Delaware", -75.5466,
+			    [City] = "Hartford" && [State] = "Connecticut", -72.6851,
+			    [City] = "Boston" && [State] = "Massachusetts", -71.0589,
+			    [City] = "Oklahoma City" && [State] = "Oklahoma", -97.5164,
+			    [City] = "Philadelphia" && [State] = "Pennsylvania", -75.1652,
+			    [City] = "Louisville" && [State] = "Kentucky", -85.7585,
+			    [City] = "Wichita" && [State] = "Kansas", -97.3301,
+			    [City] = "Newark" && [State] = "New Jersey", -74.1724,
+			    [City] = "Chicago" && [State] = "Illinois", -87.6298,
+			    [City] = "Salt Lake City" && [State] = "Utah", -111.8910,
+			    [City] = "St. Louis" && [State] = "Missouri", -90.1994,
+			    [City] = "Indianapolis" && [State] = "Indiana", -86.1581,
+			    [City] = "Sioux Falls" && [State] = "South Dakota", -96.7311,
+			    [City] = "Providence" && [State] = "Rhode Island", -71.4128,
+			    [City] = "Baltimore" && [State] = "Maryland", -76.6122,
+			    [City] = "Fargo" && [State] = "North Dakota", -96.7898,
+			    [City] = "Milwaukee" && [State] = "Wisconsin", -87.9065,
+			    [City] = "Des Moines" && [State] = "Iowa", -93.6091,
+			    [City] = "Minneapolis" && [State] = "Minnesota", -93.2650,
+			    [City] = "Omaha" && [State] = "Nebraska", -95.9345,
+			    BLANK()
+			)
+		lineageTag: ae7846f0-8577-4e02-934b-d98d6f9fbfa0
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Latitude = ```
+			SWITCH(
+			    TRUE(),
+			    [City] = "New Orleans" && [State] = "Louisiana", 29.9511,
+			    [City] = "Honolulu" && [State] = "Hawaii", 21.3069,
+			    [City] = "Richmond" && [State] = "Virginia", 37.5407,
+			    [City] = "Portland" && [State] = "Oregon", 45.5231,
+			    [City] = "Portland" && [State] = "Maine", 43.6615,
+			    [City] = "Denver" && [State] = "Colorado", 39.7392,
+			    [City] = "Dallas" && [State] = "Texas", 32.7767,
+			    [City] = "Las Vegas" && [State] = "Nevada", 36.1699,
+			    [City] = "Albuquerque" && [State] = "New Mexico", 35.0844,
+			    [City] = "Boise" && [State] = "Idaho", 43.6150,
+			    [City] = "Atlanta" && [State] = "Georgia", 33.7490,
+			    [City] = "New York" && [State] = "New York", 40.7128,
+			    [City] = "San Francisco" && [State] = "California", 37.7749,
+			    [City] = "Miami" && [State] = "Florida", 25.7617,
+			    [City] = "Charleston" && [State] = "South Carolina", 32.7765,
+			    [City] = "Charleston" && [State] = "West Virginia", 38.3498,
+			    [City] = "Orlando" && [State] = "Florida", 28.5383,
+			    [City] = "Seattle" && [State] = "Washington", 47.6062,
+			    [City] = "Los Angeles" && [State] = "California", 34.0522,
+			    [City] = "Houston" && [State] = "Texas", 29.7604,
+			    [City] = "Albany" && [State] = "New York", 42.6526,
+			    [City] = "Charlotte" && [State] = "North Carolina", 35.2271,
+			    [City] = "Detroit" && [State] = "Michigan", 42.3314,
+			    [City] = "Cheyenne" && [State] = "Wyoming", 41.1398,
+			    [City] = "Columbus" && [State] = "Ohio", 39.9612,
+			    [City] = "Knoxville" && [State] = "Tennessee", 35.9606,
+			    [City] = "Birmingham" && [State] = "Alabama", 33.5186,
+			    [City] = "Manchester" && [State] = "New Hampshire", 42.9956,
+			    [City] = "Phoenix" && [State] = "Arizona", 33.4484,
+			    [City] = "Billings" && [State] = "Montana", 45.7833,
+			    [City] = "Jackson" && [State] = "Mississippi", 32.2988,
+			    [City] = "Anchorage" && [State] = "Alaska", 61.2181,
+			    [City] = "Burlington" && [State] = "Vermont", 44.4759,
+			    [City] = "Little Rock" && [State] = "Arkansas", 34.7465,
+			    [City] = "Wilmington" && [State] = "Delaware", 39.7391,
+			    [City] = "Hartford" && [State] = "Connecticut", 41.7658,
+			    [City] = "Boston" && [State] = "Massachusetts", 42.3601,
+			    [City] = "Oklahoma City" && [State] = "Oklahoma", 35.4676,
+			    [City] = "Philadelphia" && [State] = "Pennsylvania", 39.9526,
+			    [City] = "Louisville" && [State] = "Kentucky", 38.2527,
+			    [City] = "Wichita" && [State] = "Kansas", 37.6872,
+			    [City] = "Newark" && [State] = "New Jersey", 40.7357,
+			    [City] = "Chicago" && [State] = "Illinois", 41.8781,
+			    [City] = "Salt Lake City" && [State] = "Utah", 40.7608,
+			    [City] = "St. Louis" && [State] = "Missouri", 38.6270,
+			    [City] = "Indianapolis" && [State] = "Indiana", 39.7684,
+			    [City] = "Sioux Falls" && [State] = "South Dakota", 43.5446,
+			    [City] = "Providence" && [State] = "Rhode Island", 41.8240,
+			    [City] = "Baltimore" && [State] = "Maryland", 39.2904,
+			    [City] = "Fargo" && [State] = "North Dakota", 46.8772,
+			    [City] = "Milwaukee" && [State] = "Wisconsin", 43.0389,
+			    [City] = "Des Moines" && [State] = "Iowa", 41.5868,
+			    [City] = "Minneapolis" && [State] = "Minnesota", 44.9778,
+			    [City] = "Omaha" && [State] = "Nebraska", 41.2565,
+			    BLANK()
+			)
+			
+			```
+		lineageTag: 63396b1a-b715-4aaf-9c04-3b7ca3dc8ea0
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Sales_details = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\berek\OneDrive\Documents\Data Portfolio\Adidas Sales Data Analysis\AdidasSalesdata.xlsx"), null, true),
+				    Sales_details_Sheet = Source{[Item="Sales_details",Kind="Sheet"]}[Data],
+				    #"En-têtes promus" = Table.PromoteHeaders(Sales_details_Sheet, [PromoteAllScalars=true]),
+				    #"Type modifié" = Table.TransformColumnTypes(#"En-têtes promus",{{"Retailer", type text}, {"Retailer ID", Int64.Type}, {"Invoice Date", type date}, {"Region", type text}, {"State", type text}, {"City", type text}, {"Gender Type", type text}, {"Product Category", type text}, {"Price per Unit", Int64.Type}, {"Units Sold", Int64.Type}, {"Total Sales", Int64.Type}, {"Operating Profit", type number}, {"Operating Margin", type number}, {"Sales Method", type text}})
+				in
+				    #"Type modifié"
+
+	annotation PBI_ResultType = Table
+
