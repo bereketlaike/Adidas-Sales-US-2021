@@ -190,7 +190,7 @@ table Sales_details
 
 		annotation SummarizationSetBy = Automatic
 
-	column CityState = Sales_details[City] & ", " & Sales_details[State]
+	column 'City State' = Sales_details[City] & ", " & Sales_details[State]
 		lineageTag: b73a9657-7afb-4d09-a458-c4cfdd6fc469
 		summarizeBy: none
 
